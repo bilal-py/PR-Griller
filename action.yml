@@ -1,0 +1,16 @@
+name: 'PR-Griller'
+description: 'A GitHub Action for grilling PRs'
+inputs:
+  docs_paths:
+    description: 'Comma-separated paths to architecture docs'
+    required: false
+    default: 'architecture.md'
+  github_token:
+    description: 'GITHUB_TOKEN for API access'
+    required: true
+  llm_api_key:
+    description: 'API key for the LLM provider'
+    required: true
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

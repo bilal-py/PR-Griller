@@ -1,0 +1,22 @@
+{
+  "name": "pr-griller",
+  "version": "1.0.0",
+  "description": "A TypeScript-based GitHub Action",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.ts -o dist --source-map --license licenses.txt"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "openai": "^4.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "@vercel/ncc": "^0.38.0"
+  },
+  "keywords": ["github-action", "typescript"],
+  "author": "",
+  "license": "MIT"
+}
