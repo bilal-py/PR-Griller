@@ -1,13 +1,9 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import { getCustomDocs, getPRDiff } from "./agents/retriever";
+import { getPRDiff, getArchitectureDocs } from "./agents/retriever";
 
 async function run(): Promise<void> {
   try {
-    // Read inputs
-    const token = core.getInput("github_token", { required: true });
-    const docsPaths = core.getInput("docs_paths") || "architecture.md";
-
     const eventName = github.context.eventName;
 
     switch (eventName) {
@@ -19,15 +15,23 @@ async function run(): Promise<void> {
           return;
         }
 
-        const docsContext = getCustomDocs(docsPaths);
-        const prDiff = await getPRDiff(
-          token,
-          github.context.repo.owner,
-          github.context.repo.repo,
-          prNumber
-        );
+        // Read inputs
+        const token = core.getInput("github_token", { required: true });
+        const docsPath = core.getInput("docs_paths") || "architecture.md";
 
-        core.info("Successfully fetched docs and PR diff for The Grill Flow.");
+        // Instantiate Octokit
+        const octokit = github.getOctokit(token);
+
+        // Fetch PR diff
+        const diff = await getPRDiff(octokit, github.context);
+
+        // Fetch architecture documentation
+        const architectureRules = getArchitectureDocs(docsPath);
+
+        // Log context lengths
+        core.info(`PR diff length: ${diff.length} characters`);
+        core.info(`Architecture docs length: ${architectureRules.length} characters`);
+
         break;
       }
 
@@ -48,15 +52,22 @@ async function run(): Promise<void> {
             return;
           }
 
-          const docsContext = getCustomDocs(docsPaths);
-          const prDiff = await getPRDiff(
-            token,
-            github.context.repo.owner,
-            github.context.repo.repo,
-            prNumber
-          );
+          // Read inputs
+          const token = core.getInput("github_token", { required: true });
+          const docsPath = core.getInput("docs_paths") || "architecture.md";
 
-          core.info("Successfully fetched docs and PR diff for The Sync Flow.");
+          // Instantiate Octokit
+          const octokit = github.getOctokit(token);
+
+          // Fetch PR diff
+          const diff = await getPRDiff(octokit, github.context);
+
+          // Fetch architecture documentation
+          const architectureRules = getArchitectureDocs(docsPath);
+
+          // Log context lengths
+          core.info(`PR diff length: ${diff.length} characters`);
+          core.info(`Architecture docs length: ${architectureRules.length} characters`);
         } else {
           core.info("Ignored comment: not a sync command");
         }
